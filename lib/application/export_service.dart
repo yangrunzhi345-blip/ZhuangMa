@@ -6,4 +6,6 @@ class ExportService {
   String json(AttackScenario scenario) => ScenarioExporter().json(scenario);
   String markdown(AttackScenario scenario) =>
       ScenarioExporter().markdown(scenario);
+  String testCaseJson(AdversarialTestCase testCase) =>
+      ScenarioExporter().testCaseJson(testCase);
 }

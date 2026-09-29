@@ -5,10 +5,8 @@ import 'package:zhuangma/main.dart';
 import 'package:zhuangma/infrastructure/sqlite_scenario_repository.dart';
 import 'package:zhuangma/application/file_export_service.dart';
 
-import 'dart:io';
-
 void main() {
-  test('scenario JSON round trip and exports', () {
+  test('scenario JSON round trip and exports', () async {
     final scenario = AttackGenerator().generate(
       AttackCategory.encodedInjection,
       'Test encoded instructions',

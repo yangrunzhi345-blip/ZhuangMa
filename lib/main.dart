@@ -397,8 +397,6 @@ class HomePage extends StatelessWidget {
           strings.homeDescription,
           style: Theme.of(c).textTheme.headlineMedium,
         ),
-        const SizedBox(height: 12),
-        Text(strings.homeDescription),
         const SizedBox(height: 24),
         Wrap(
           spacing: 12,

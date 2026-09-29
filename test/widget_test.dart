@@ -5,7 +5,9 @@ void main() {
   testWidgets('responsive shell renders', (tester) async {
     await tester.pumpWidget(const MyApp());
     expect(
-      find.text('Adversarial testing for AI applications'),
+      find.text(
+        'An adversarial testing toolkit for evaluating AI application security.',
+      ),
       findsOneWidget,
     );
   });

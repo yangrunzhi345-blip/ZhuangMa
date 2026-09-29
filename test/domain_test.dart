@@ -4,8 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zhuangma/main.dart';
 import 'package:zhuangma/infrastructure/sqlite_scenario_repository.dart';
 import 'package:zhuangma/application/file_export_service.dart';
+import 'package:zhuangma/presentation/app_strings.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
+  test('localized copy provides English fallback and zh-Hans', () {
+    expect(
+      AppStrings(const Locale('en')).homeDescription,
+      contains('adversarial'),
+    );
+    expect(
+      AppStrings(const Locale('zh', 'Hans')).homeDescription,
+      contains('对抗测试'),
+    );
+  });
   test('scenario JSON round trip and exports', () async {
     final scenario = AttackGenerator().generate(
       AttackCategory.encodedInjection,

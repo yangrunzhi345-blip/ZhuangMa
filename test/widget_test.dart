@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zhuangma/main.dart';
 
@@ -23,17 +23,6 @@ void main() {
       expect(t.restore(t.transform(input)), input);
     }
   });
-}
-  testWidgets('shell fits narrow and desktop widths', (tester) async {
-    for (final width in [320.0, 390.0, 1024.0]) {
-      await tester.binding.setSurfaceSize(Size(width, 800));
-      await tester.pumpWidget(const MyApp());
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-    }
-    await tester.binding.setSurfaceSize(null);
-  });
-
   testWidgets('shell fits narrow and desktop widths', (tester) async {
     for (final width in [320.0, 390.0, 1024.0]) {
       await tester.binding.setSurfaceSize(Size(width, 800));

@@ -1,10 +1,12 @@
 // ignore_for_file: annotate_overrides, deprecated_member_use
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import 'presentation/app_strings.dart';
+import 'infrastructure/sqlite_scenario_repository.dart';
 
 class TransformationResult {
   final String originalText, transformedText, transformerId;
@@ -628,28 +630,79 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryState extends State<LibraryPage> {
-  final repo = ScenarioRepository();
+  SqliteScenarioRepository? database;
+  List<AttackScenario> scenarios = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final path = '${Directory.systemTemp.path}/zhuangma_library.db';
+    final db = await SqliteScenarioRepository.open(path);
+    final saved = await db.all();
+    if (!mounted) {
+      await db.close();
+      return;
+    }
+    setState(() {
+      database = db;
+      scenarios = saved;
+      loading = false;
+    });
+  }
+
+  Future<void> _create() async {
+    final item = AttackGenerator().generate(
+      AttackCategory.directPromptInjection,
+      'Test instruction priority boundary',
+    );
+    await database?.save(item);
+    if (mounted) setState(() => scenarios = [...scenarios, item]);
+  }
+
+  Future<void> _delete(AttackScenario item) async {
+    await database?.delete(item.id);
+    if (mounted) setState(() => scenarios.removeWhere((x) => x.id == item.id));
+  }
+
+  @override
+  void dispose() {
+    database?.close();
+    super.dispose();
+  }
+
   Widget build(BuildContext c) => ListView(
     padding: const EdgeInsets.all(24),
     children: [
       Text('Attack Library', style: Theme.of(c).textTheme.headlineMedium),
       const SizedBox(height: 8),
-      Text('${repo.getAll().length} saved scenarios'),
-      const SizedBox(height: 16),
-      if (repo.getAll().isEmpty)
-        const Text(
-          'Generate an attack to save it here. This local repository supports scenario management.',
-        )
+      if (loading)
+        const LinearProgressIndicator()
       else
-        ...repo.getAll().map(
-          (s) => ListTile(
-            title: Text(s.name),
-            subtitle: Text(s.objective),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              onPressed: () {
-                setState(() => repo.delete(s.id));
-              },
+        Text('${scenarios.length} saved scenarios'),
+      const SizedBox(height: 12),
+      FilledButton.icon(
+        onPressed: loading ? null : _create,
+        icon: const Icon(Icons.add),
+        label: const Text('Create local scenario'),
+      ),
+      const SizedBox(height: 12),
+      if (!loading && scenarios.isEmpty)
+        const Text('No saved scenarios yet.')
+      else
+        ...scenarios.map(
+          (s) => Card(
+            child: ListTile(
+              title: Text(s.name),
+              subtitle: Text(s.objective),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _delete(s),
+              ),
             ),
           ),
         ),

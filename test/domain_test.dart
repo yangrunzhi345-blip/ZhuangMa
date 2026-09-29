@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zhuangma/main.dart';
 import 'package:zhuangma/infrastructure/sqlite_scenario_repository.dart';
+import 'package:zhuangma/application/file_export_service.dart';
+
+import 'dart:io';
 
 void main() {
   test('scenario JSON round trip and exports', () {
@@ -32,6 +35,12 @@ void main() {
     );
     expect(conversation.toJson()['messages'], hasLength(1));
     expect(testCase.toJson()['schemaVersion'], 1);
+    final file = await FileExportService().writeJson(
+      scenario,
+      '${Directory.systemTemp.path}/zhuangma_export_test.json',
+    );
+    expect(await file.readAsString(), contains('schemaVersion'));
+    await file.delete();
   });
 
   test('sqlite repository saves and reads scenarios', () async {

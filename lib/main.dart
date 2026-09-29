@@ -138,6 +138,8 @@ class RecoveryProtocol {
   };
 }
 
+enum Intensity { direct, obfuscated, contextual, multiTurn, composite }
+
 enum AttackCategory {
   directPromptInjection,
   indirectPromptInjection,

@@ -204,6 +204,81 @@ class AttackGenerator {
   }
 }
 
+class AttackMessage {
+  final String role, content;
+  final int sequence;
+  const AttackMessage({
+    required this.role,
+    required this.content,
+    required this.sequence,
+  });
+  Map<String, dynamic> toJson() => {
+    'role': role,
+    'content': content,
+    'sequence': sequence,
+  };
+}
+
+class AttackConversation {
+  final String id;
+  final List<AttackMessage> messages;
+  const AttackConversation({required this.id, required this.messages});
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'messages': messages.map((m) => m.toJson()).toList(),
+  };
+}
+
+class AdversarialTestCase {
+  final String id, category, objective, expectedSecureBehavior;
+  final List<AttackMessage> messages;
+  final List<String> transformations;
+  final Map<String, dynamic> metadata;
+  const AdversarialTestCase({
+    required this.id,
+    required this.category,
+    required this.objective,
+    required this.messages,
+    required this.transformations,
+    required this.expectedSecureBehavior,
+    this.metadata = const {},
+  });
+  Map<String, dynamic> toJson() => {
+    'schemaVersion': 1,
+    'id': id,
+    'category': category,
+    'objective': objective,
+    'messages': messages.map((m) => m.toJson()).toList(),
+    'transformations': transformations,
+    'expectedSecureBehavior': expectedSecureBehavior,
+    'metadata': metadata,
+  };
+}
+
+class ScenarioExporter {
+  String json(AttackScenario s, {List<String> transformations = const []}) =>
+      const JsonEncoder.withIndent('  ').convert({
+        'schemaVersion': 1,
+        'scenario': s.toJson(),
+        'transformations': transformations,
+      });
+  String markdown(AttackScenario s) =>
+      '# ${s.name}\n\n**Category:** ${s.category.name}\n\n**Objective:** ${s.objective}\n\n## Prompt\n\n${s.prompt}\n\n## Expected secure behavior\n\n${s.expectedSecureBehavior}\n';
+  String plain(AttackScenario s) =>
+      '${s.name}\n${s.prompt}\nExpected: ${s.expectedSecureBehavior}';
+}
+
+class ScenarioRepository {
+  final List<AttackScenario> _items = [];
+  List<AttackScenario> getAll() => List.unmodifiable(_items);
+  void save(AttackScenario item) {
+    _items.removeWhere((x) => x.id == item.id);
+    _items.add(item);
+  }
+
+  void delete(String id) => _items.removeWhere((x) => x.id == id);
+}
+
 void main() => runApp(const ZhuangMaApp());
 
 class MyApp extends ZhuangMaApp {

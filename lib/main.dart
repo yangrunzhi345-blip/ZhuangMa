@@ -289,6 +289,8 @@ class ZhuangMaApp extends StatelessWidget {
   const ZhuangMaApp({super.key});
   Widget build(BuildContext c) => MaterialApp(
     title: 'ZhuangMa',
+    locale: const Locale('en'),
+    supportedLocales: const [Locale('en'), Locale('zh', 'Hans')],
     theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
     home: const Shell(),
   );

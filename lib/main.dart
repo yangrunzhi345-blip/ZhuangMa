@@ -125,6 +125,10 @@ class TransformationPipeline {
   TransformationPipeline(this.steps);
   String transform(String s) => steps.fold(s, (v, t) => t.transform(v));
   String reverse(String s) => steps.reversed.fold(s, (v, t) => t.restore(v));
+  RecoveryProtocol recoveryProtocol(String original) => RecoveryProtocol(
+    steps.map((step) => step.id).toList(),
+    base64Encode(utf8.encode(original)),
+  );
 }
 
 class RecoveryProtocol {

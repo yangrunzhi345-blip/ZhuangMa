@@ -71,13 +71,19 @@ class HexTransformer extends TextTransformer {
   String get displayName => 'Hex';
   String transform(String s, {Map<String, dynamic> options = const {}}) =>
       utf8.encode(s).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
-  String restore(String s, {Map<String, dynamic> options = const {}}) =>
-      utf8.decode(
-        List.generate(
-          s.length ~/ 2,
-          (i) => int.parse(s.substring(i * 2, i * 2 + 2), radix: 16),
-        ),
+  String restore(String s, {Map<String, dynamic> options = const {}}) {
+    if (s.length.isOdd || !RegExp(r'^[0-9a-fA-F]*$').hasMatch(s)) {
+      throw const FormatException(
+        'hex payload must contain an even number of hexadecimal digits',
       );
+    }
+    return utf8.decode(
+      List.generate(
+        s.length ~/ 2,
+        (i) => int.parse(s.substring(i * 2, i * 2 + 2), radix: 16),
+      ),
+    );
+  }
 }
 
 class SeparatorTransformer extends TextTransformer {
@@ -94,11 +100,13 @@ class ChunkTransformer extends TextTransformer {
   String get displayName => 'Chunk Reordering';
   String transform(String s, {Map<String, dynamic> options = const {}}) {
     final n = (options['chunks'] as int?) ?? 3;
-    final size = (s.length / n).ceil();
+    if (n < 1) throw const FormatException('chunks must be positive');
+    final codePoints = s.runes.toList();
+    final size = (codePoints.length / n).ceil();
     return [
       for (var i = 0; i < n; i++)
-        if (i * size < s.length)
-          '[${i + 1}/$n] ${s.substring(i * size, min(s.length, (i + 1) * size))}',
+        if (i * size < codePoints.length)
+          '[${i + 1}/$n] ${base64Encode(utf8.encode(String.fromCharCodes(codePoints.sublist(i * size, min(codePoints.length, (i + 1) * size)))))}',
     ].reversed.join('\n');
   }
 
@@ -107,7 +115,7 @@ class ChunkTransformer extends TextTransformer {
       ..sort(
         (x, y) => int.parse(x.group(1)!).compareTo(int.parse(y.group(1)!)),
       );
-    return m.map((x) => x.group(3)).join();
+    return m.map((x) => utf8.decode(base64Decode(x.group(3)!))).join();
   }
 }
 

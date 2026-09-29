@@ -46,6 +46,33 @@ void main() {
     expect(conversation.toJson()['messages'], hasLength(1));
     expect(testCase.toJson()['schemaVersion'], 1);
     expect(exporter.testCaseJson(testCase), contains('schemaVersion'));
+    const samples = [
+      '',
+      'A',
+      '中文繁體',
+      '日本語',
+      '한국어',
+      '👩‍💻✨',
+      'é\u200b',
+      'a\t b\r\n\r\n',
+    ];
+    for (final sample in samples) {
+      for (final transformer in [
+        UnicodeTransformer(),
+        CodePointTransformer(),
+        Base64Transformer(),
+        HexTransformer(),
+        ChunkTransformer(),
+        WrapperTransformer(),
+      ]) {
+        expect(
+          transformer.restore(transformer.transform(sample)),
+          sample,
+          reason: transformer.id,
+        );
+      }
+    }
+    expect(() => HexTransformer().restore('abc'), throwsFormatException);
     final file = await FileExportService().writeJson(
       scenario,
       '${Directory.systemTemp.path}/zhuangma_export_test.json',

@@ -16,6 +16,22 @@ void main() {
     expect(exporter.json(scenario), contains('schemaVersion'));
     expect(exporter.markdown(scenario), contains('# '));
     expect(exporter.plain(scenario), contains(scenario.prompt));
+    final conversation = AttackConversation(
+      id: scenario.id,
+      messages: [
+        AttackMessage(role: 'user', content: scenario.prompt, sequence: 1),
+      ],
+    );
+    final testCase = AdversarialTestCase(
+      id: scenario.id,
+      category: scenario.category.name,
+      objective: scenario.objective,
+      messages: conversation.messages,
+      transformations: const ['base64'],
+      expectedSecureBehavior: scenario.expectedSecureBehavior,
+    );
+    expect(conversation.toJson()['messages'], hasLength(1));
+    expect(testCase.toJson()['schemaVersion'], 1);
   });
 
   test('sqlite repository saves and reads scenarios', () async {

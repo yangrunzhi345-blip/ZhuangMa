@@ -182,6 +182,20 @@ class AttackScenario {
     'expectedSecureBehavior': expectedSecureBehavior,
     'tags': tags,
   };
+  static AttackScenario fromJson(Map<String, dynamic> json) => AttackScenario(
+    id: json['id'] as String,
+    name: json['name'] as String,
+    category: AttackCategory.values.firstWhere(
+      (c) => c.name == json['category'],
+    ),
+    description: json['description'] as String,
+    objective: json['objective'] as String,
+    targetBoundary: json['targetBoundary'] as String,
+    severity: json['severity'] as int,
+    prompt: json['prompt'] as String,
+    expectedSecureBehavior: json['expectedSecureBehavior'] as String,
+    tags: (json['tags'] as List<dynamic>? ?? const []).cast<String>(),
+  );
 }
 
 class AttackGenerator {
@@ -448,10 +462,47 @@ class _ComposerState extends State<ComposerPage> {
             child: SelectableText(jsonEncode(result!.toJson())),
           ),
         ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          children: [
+            OutlinedButton(
+              onPressed: () =>
+                  _showExport(c, ScenarioExporter().plain(result!)),
+              child: const Text('Plain Text'),
+            ),
+            OutlinedButton(
+              onPressed: () => _showExport(c, ScenarioExporter().json(result!)),
+              child: const Text('JSON'),
+            ),
+            OutlinedButton(
+              onPressed: () =>
+                  _showExport(c, ScenarioExporter().markdown(result!)),
+              child: const Text('Markdown'),
+            ),
+          ],
+        ),
       ],
     ],
   );
 }
+
+void _showExport(BuildContext context, String content) => showDialog<void>(
+  context: context,
+  builder: (_) => AlertDialog(
+    title: const Text('Export preview'),
+    content: SizedBox(
+      width: 600,
+      child: SingleChildScrollView(child: SelectableText(content)),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Close'),
+      ),
+    ],
+  ),
+);
 
 class TransformerPage extends StatefulWidget {
   const TransformerPage({super.key});

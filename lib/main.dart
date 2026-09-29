@@ -590,18 +590,34 @@ class _TransformerState extends State<TransformerPage> {
       ),
       const SizedBox(height: 12),
       Text('Pipeline steps', style: Theme.of(c).textTheme.titleMedium),
-      Wrap(
-        spacing: 6,
-        children: selected
-            .asMap()
-            .entries
-            .map(
-              (entry) => InputChip(
-                label: Text('\${entry.key + 1}. \${entry.value.displayName}'),
-                onDeleted: () => setState(() => selected.removeAt(entry.key)),
-              ),
-            )
-            .toList(),
+      ...selected.asMap().entries.map(
+        (entry) => Row(
+          children: [
+            Text('${entry.key + 1}. ${entry.value.displayName}'),
+            IconButton(
+              icon: const Icon(Icons.arrow_upward),
+              onPressed: entry.key == 0
+                  ? null
+                  : () => setState(() {
+                      final item = selected.removeAt(entry.key);
+                      selected.insert(entry.key - 1, item);
+                    }),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_downward),
+              onPressed: entry.key == selected.length - 1
+                  ? null
+                  : () => setState(() {
+                      final item = selected.removeAt(entry.key);
+                      selected.insert(entry.key + 1, item);
+                    }),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => setState(() => selected.removeAt(entry.key)),
+            ),
+          ],
+        ),
       ),
       DropdownButtonFormField<TextTransformer>(
         initialValue: null,

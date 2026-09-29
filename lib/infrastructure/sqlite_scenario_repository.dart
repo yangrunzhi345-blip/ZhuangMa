@@ -4,6 +4,13 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../main.dart';
 
+class ScenarioRepositoryException implements Exception {
+  final String message;
+  const ScenarioRepositoryException(this.message);
+  @override
+  String toString() => 'ScenarioRepositoryException: $message';
+}
+
 class SqliteScenarioRepository {
   final Database database;
   SqliteScenarioRepository(this.database);
@@ -29,13 +36,21 @@ class SqliteScenarioRepository {
       'attack_scenarios',
       orderBy: 'created_at DESC',
     );
-    return rows
-        .map(
-          (row) => AttackScenario.fromJson(
+    final result = <AttackScenario>[];
+    for (final row in rows) {
+      try {
+        result.add(
+          AttackScenario.fromJson(
             jsonDecode(row['payload']! as String) as Map<String, dynamic>,
           ),
-        )
-        .toList();
+        );
+      } on Object catch (error) {
+        throw ScenarioRepositoryException(
+          'Invalid scenario record ${row['id']}: $error',
+        );
+      }
+    }
+    return result;
   }
 
   Future<void> delete(String id) =>

@@ -73,6 +73,13 @@ void main() {
       }
     }
     expect(() => HexTransformer().restore('abc'), throwsFormatException);
+    final prompts = AttackCategory.values
+        .map(
+          (category) =>
+              AttackGenerator().generate(category, 'objective').prompt,
+        )
+        .toSet();
+    expect(prompts.length, AttackCategory.values.length);
     final file = await FileExportService().writeJson(
       scenario,
       '${Directory.systemTemp.path}/zhuangma_export_test.json',
@@ -95,6 +102,9 @@ void main() {
     await repository.delete(scenario.id);
     expect(await repository.all(), isEmpty);
     await repository.close();
+    final reopened = await SqliteScenarioRepository.open(file.path);
+    expect((await reopened.all()).isEmpty, isTrue);
+    await reopened.close();
     if (file.existsSync()) file.deleteSync();
   });
 }

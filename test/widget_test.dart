@@ -24,7 +24,7 @@ void main() {
     }
   });
   testWidgets('shell fits narrow and desktop widths', (tester) async {
-    for (final width in [320.0, 390.0, 1024.0]) {
+    for (final width in [320.0, 360.0, 390.0, 600.0, 1024.0, 1440.0]) {
       await tester.binding.setSurfaceSize(Size(width, 800));
       await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();

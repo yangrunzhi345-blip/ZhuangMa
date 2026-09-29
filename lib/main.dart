@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'presentation/app_strings.dart';
+
 class TransformationResult {
   final String originalText, transformedText, transformerId;
   final Map<String, dynamic> parameters, metadata;
@@ -386,38 +388,40 @@ class _ShellState extends State<Shell> {
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-  Widget build(BuildContext c) => ListView(
-    padding: const EdgeInsets.all(24),
-    children: [
-      Text(
-        'Adversarial testing for AI applications',
-        style: Theme.of(c).textTheme.headlineMedium,
-      ),
-      const SizedBox(height: 12),
-      const Text(
-        'ZhuangMa is an adversarial testing toolkit for evaluating AI application security.',
-      ),
-      const SizedBox(height: 24),
-      Wrap(
-        spacing: 12,
-        children: [
-          FilledButton.icon(
-            onPressed: () => Navigator.of(c)
-                .push(MaterialPageRoute(builder: (_) => const ComposerPage())),
-            icon: const Icon(Icons.bolt),
-            label: const Text('Create Attack Test'),
-          ),
-          OutlinedButton.icon(
-            onPressed: () => Navigator.of(
-              c,
-            ).push(MaterialPageRoute(builder: (_) => const TransformerPage())),
-            icon: const Icon(Icons.transform),
-            label: const Text('Transform Payload'),
-          ),
-        ],
-      ),
-    ],
-  );
+  Widget build(BuildContext c) {
+    final strings = AppStrings(Localizations.localeOf(c));
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
+        Text(
+          strings.homeDescription,
+          style: Theme.of(c).textTheme.headlineMedium,
+        ),
+        const SizedBox(height: 12),
+        Text(strings.homeDescription),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          children: [
+            FilledButton.icon(
+              onPressed: () => Navigator.of(
+                c,
+              ).push(MaterialPageRoute(builder: (_) => const ComposerPage())),
+              icon: const Icon(Icons.bolt),
+              label: Text(strings.createAttack),
+            ),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.of(c).push(
+                MaterialPageRoute(builder: (_) => const TransformerPage()),
+              ),
+              icon: const Icon(Icons.transform),
+              label: Text(strings.transformPayload),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class ComposerPage extends StatefulWidget {

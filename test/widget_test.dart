@@ -23,3 +23,13 @@ void main() {
     }
   });
 }
+
+  testWidgets('shell fits narrow and desktop widths', (tester) async {
+    for (final width in [320.0, 390.0, 1024.0]) {
+      await tester.binding.setSurfaceSize(Size(width, 800));
+      await tester.pumpWidget(const MyApp());
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+    await tester.binding.setSurfaceSize(null);
+  });

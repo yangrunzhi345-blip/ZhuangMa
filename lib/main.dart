@@ -505,8 +505,37 @@ class _TransformerState extends State<TransformerPage> {
   );
 }
 
-class LibraryPage extends StatelessWidget {
+class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
-  Widget build(BuildContext c) =>
-      const Center(child: Text('Your saved test cases will appear here.'));
+  State<LibraryPage> createState() => _LibraryState();
+}
+
+class _LibraryState extends State<LibraryPage> {
+  final repo = ScenarioRepository();
+  Widget build(BuildContext c) => ListView(
+    padding: const EdgeInsets.all(24),
+    children: [
+      Text('Attack Library', style: Theme.of(c).textTheme.headlineMedium),
+      const SizedBox(height: 8),
+      Text('${repo.getAll().length} saved scenarios'),
+      const SizedBox(height: 16),
+      if (repo.getAll().isEmpty)
+        const Text(
+          'Generate an attack to save it here. This local repository supports scenario management.',
+        )
+      else
+        ...repo.getAll().map(
+          (s) => ListTile(
+            title: Text(s.name),
+            subtitle: Text(s.objective),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () {
+                setState(() => repo.delete(s.id));
+              },
+            ),
+          ),
+        ),
+    ],
+  );
 }

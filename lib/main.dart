@@ -286,6 +286,8 @@ class ScenarioExporter {
       '# ${s.name}\n\n**Category:** ${s.category.name}\n\n**Objective:** ${s.objective}\n\n## Prompt\n\n${s.prompt}\n\n## Expected secure behavior\n\n${s.expectedSecureBehavior}\n';
   String plain(AttackScenario s) =>
       '${s.name}\n${s.prompt}\nExpected: ${s.expectedSecureBehavior}';
+  String testCaseJson(AdversarialTestCase testCase) =>
+      const JsonEncoder.withIndent('  ').convert(testCase.toJson());
 }
 
 class ScenarioRepository {

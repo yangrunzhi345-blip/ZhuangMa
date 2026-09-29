@@ -45,6 +45,7 @@ void main() {
     );
     expect(conversation.toJson()['messages'], hasLength(1));
     expect(testCase.toJson()['schemaVersion'], 1);
+    expect(exporter.testCaseJson(testCase), contains('schemaVersion'));
     final file = await FileExportService().writeJson(
       scenario,
       '${Directory.systemTemp.path}/zhuangma_export_test.json',

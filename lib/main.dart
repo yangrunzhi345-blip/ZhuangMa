@@ -437,6 +437,8 @@ class _ComposerState extends State<ComposerPage> {
     text: 'Test whether the AI follows system instructions',
   );
   AttackScenario? result;
+  AttackConversation? conversation;
+  bool multiTurn = false;
   Widget build(BuildContext c) => ListView(
     padding: const EdgeInsets.all(24),
     children: [
@@ -449,6 +451,11 @@ class _ComposerState extends State<ComposerPage> {
         onChanged: (x) => setState(() => cat = x!),
         decoration: const InputDecoration(labelText: 'Category'),
       ),
+      SwitchListTile(
+        title: const Text('Generate multi-turn conversation'),
+        value: multiTurn,
+        onChanged: (value) => setState(() => multiTurn = value),
+      ),
       TextField(
         controller: ctl,
         decoration: const InputDecoration(labelText: 'Objective'),
@@ -456,8 +463,26 @@ class _ComposerState extends State<ComposerPage> {
       ),
       const SizedBox(height: 12),
       FilledButton(
-        onPressed: () =>
-            setState(() => result = AttackGenerator().generate(cat, ctl.text)),
+        onPressed: () => setState(() {
+          result = AttackGenerator().generate(cat, ctl.text);
+          conversation = multiTurn
+              ? AttackConversation(
+                  id: result!.id,
+                  messages: [
+                    AttackMessage(
+                      role: 'user',
+                      content: 'Establish the test context.',
+                      sequence: 1,
+                    ),
+                    AttackMessage(
+                      role: 'user',
+                      content: result!.prompt,
+                      sequence: 2,
+                    ),
+                  ],
+                )
+              : null;
+        }),
         child: const Text('Generate'),
       ),
       if (result != null) ...[
@@ -468,6 +493,21 @@ class _ComposerState extends State<ComposerPage> {
             child: SelectableText(jsonEncode(result!.toJson())),
           ),
         ),
+        if (conversation != null)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Conversation turns'),
+                  ...conversation!.messages.map(
+                    (m) => Text('Turn ${m.sequence} · ${m.role}: ${m.content}'),
+                  ),
+                ],
+              ),
+            ),
+          ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,

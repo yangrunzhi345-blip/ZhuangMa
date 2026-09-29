@@ -23,7 +23,16 @@
 - Robust responsive UI hardening across 320px–1440px viewport widths with zero RenderFlex overflow
 - Expanded comprehensive test suite from 6 tests to 47 tests across domain, transformer matrix, SQLite repository, and responsive widgets
 
-## Phase 2: Security Harness Protocol & Local Execution (Upcoming)
+## Phase 2A: Architecture Hardening (Completed)
+- Strict layer decoupling across Domain, Application, Infrastructure, and Presentation
+- Pure Dart `domain/` layer with zero dependencies on Flutter, SQLite, or UI libraries
+- `main.dart` converged from 1481 lines to an ultra-compact ~30 line bootstrap entry point
+- Single Authority enforcement: `TransformationEngine`, `ScenarioRepository` contract interface, `ScenarioExporter`, and `AttackGenerationService`
+- Error boundary enforcement preventing raw exception leakages to user interfaces
+- Automated architecture boundary test suite enforcing layer isolation (`test/architecture_test.dart`)
+- Test suite expanded to 54 tests with 100% pass rate and zero analyzer issues
+
+## Phase 2B: Security Harness Protocol & Local Execution (Upcoming)
 - Security Harness orchestration protocol
 - Local execution harness for LLM/agent boundary testing
 - Batch attack execution and automated evaluation against expected secure behavior

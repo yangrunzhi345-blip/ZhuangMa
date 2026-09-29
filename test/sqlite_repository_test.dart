@@ -1,8 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zhuangma/main.dart';
-import 'package:zhuangma/infrastructure/sqlite_scenario_repository.dart';
+import 'package:zhuangma/domain/attack/attack_category.dart';
+import 'package:zhuangma/domain/attack/attack_conversation.dart';
+import 'package:zhuangma/domain/attack/attack_generator.dart';
+import 'package:zhuangma/domain/attack/attack_intensity.dart';
+import 'package:zhuangma/domain/attack/attack_message.dart';
+import 'package:zhuangma/domain/attack/attack_scenario.dart';
+import 'package:zhuangma/infrastructure/database/sqlite/sqlite_scenario_repository.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

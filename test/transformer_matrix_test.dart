@@ -1,7 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zhuangma/main.dart';
+import 'package:zhuangma/domain/transformation/transformation_pipeline.dart';
+import 'package:zhuangma/domain/transformation/transformers/chunk_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/code_point_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/hex_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/separator_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/unicode_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/wrapper_transformer.dart';
 
 void main() {
   group('Transformer Systematic Unicode & Structure Matrix', () {

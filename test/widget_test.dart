@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zhuangma/main.dart';
+import 'package:zhuangma/domain/transformation/text_transformer.dart';
+import 'package:zhuangma/presentation/app.dart';
+import 'package:zhuangma/presentation/pages/composer_page.dart';
+import 'package:zhuangma/presentation/pages/home_page.dart';
+import 'package:zhuangma/presentation/pages/library_page.dart';
+import 'package:zhuangma/presentation/pages/transformer_page.dart';
 
 void main() {
   testWidgets(

@@ -2,10 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zhuangma/application/export_service.dart';
-import 'package:zhuangma/application/file_export_service.dart';
-import 'package:zhuangma/application/llm_provider.dart';
-import 'package:zhuangma/main.dart';
+import 'package:zhuangma/application/export/export_service.dart';
+import 'package:zhuangma/domain/attack/attack_category.dart';
+import 'package:zhuangma/domain/attack/attack_conversation.dart';
+import 'package:zhuangma/domain/attack/attack_generator.dart';
+import 'package:zhuangma/domain/attack/attack_intensity.dart';
+import 'package:zhuangma/domain/attack/attack_message.dart';
+import 'package:zhuangma/domain/protocol/adversarial_test_case.dart';
+import 'package:zhuangma/domain/protocol/recovery_protocol.dart';
+import 'package:zhuangma/domain/transformation/reversibility.dart';
+import 'package:zhuangma/domain/transformation/transformation_pipeline.dart';
+import 'package:zhuangma/domain/transformation/transformers/base64_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/chunk_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/code_point_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/hex_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/separator_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/unicode_transformer.dart';
+import 'package:zhuangma/domain/transformation/transformers/wrapper_transformer.dart';
+import 'package:zhuangma/infrastructure/export/file/file_export_service.dart';
+import 'package:zhuangma/infrastructure/providers/mock_llm_provider.dart';
 import 'package:zhuangma/presentation/app_strings.dart';
 
 void main() {

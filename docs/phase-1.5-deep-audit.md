@@ -15,3 +15,10 @@ The deterministic matrix covers empty text, ASCII, CJK, Japanese, Korean, emoji 
 
 ## Remaining limitations
 The current repository still uses a compact domain implementation in `lib/main.dart`; a future refactor can split domain, application, and presentation files further. Full file-picker integration and exhaustive localized UI copy migration remain follow-up work.
+
+## Additional validation
+
+- Generator templates now vary by category so category selection changes test semantics.
+- SQLite records are reopened after close in integration tests; malformed records are surfaced as `ScenarioRepositoryException`.
+- Responsive widget coverage includes 320, 360, 390, 600, 1024, and 1440 logical pixels.
+- Hex input validation rejects malformed payloads rather than silently truncating data.
